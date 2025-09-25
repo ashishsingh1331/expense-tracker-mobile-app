@@ -91,8 +91,9 @@ T017 — Manual entry screen UI + ViewModel (Riverpod)
 T018 — Recurring income UI + ViewModel
 - Files: `lib/ui/income/income_page.dart`, `lib/ui/income/income_viewmodel.dart`, `test/unit/income_widget_test.dart`
 
-T019 — Dashboard provider: monthly aggregation, category breakdown, top merchants
+T019 ✅ — Dashboard provider: monthly aggregation, category breakdown, top merchants
 - Files: `lib/ui/dashboard/dashboard_viewmodel.dart`, `test/unit/dashboard_test.dart`
+- Completed: Implemented DashboardViewModel with monthly summary, category breakdown, and top merchants support
 
 T020 — Dashboard UI with charts integration (syncfusion)
 - Files: `lib/ui/dashboard/dashboard_page.dart`, `test/widgets/dashboard_widget_test.dart`
