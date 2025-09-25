@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/services/repository/transaction_repository.dart';
+import 'package:expense_tracker/services/db/migrations.dart';
 import 'package:expense_tracker/models/transaction.dart' as TxnModel;
 import 'package:expense_tracker/ui/manual_entry_screen.dart';
 // Lightweight chart point for sparkline
@@ -88,7 +89,37 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Expense Tracker')),
+      appBar: AppBar(
+        title: const Text('Expense Tracker'),
+        actions: [
+          // Debug menu: reset sample data (visible in debug builds)
+          PopupMenuButton<String>(
+            onSelected: (v) async {
+              if (v == 'reset') {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Reset data'),
+                    content: const Text('This will clear the local database and reseed sample data. Continue?'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
+                      TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Reset')),
+                    ],
+                  ),
+                );
+                if (confirm == true) {
+                  await DatabaseMigrator.resetDatabase();
+                  await _repo.seedSampleData();
+                  await _load();
+                }
+              }
+            },
+            itemBuilder: (ctx) => [
+              const PopupMenuItem(value: 'reset', child: Text('Reset sample data')),
+            ],
+          ),
+        ],
+      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -121,11 +152,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                           child: Column(
+                                            mainAxisSize: MainAxisSize.min,
                                             mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
-                                              Container(height: height.clamp(4.0, constraints.maxHeight - 16), color: Colors.redAccent),
+                                              Container(
+                                                height: height.clamp(4.0, (constraints.maxHeight - 24).clamp(4.0, constraints.maxHeight)),
+                                                color: Colors.redAccent,
+                                              ),
                                               const SizedBox(height: 6),
-                                              Text('${d.day.month}/${d.day.day}', style: const TextStyle(fontSize: 10)),
+                                              Flexible(
+                                                fit: FlexFit.loose,
+                                                child: FittedBox(
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text('${d.day.month}/${d.day.day}', style: const TextStyle(fontSize: 10)),
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
