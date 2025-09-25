@@ -95,8 +95,9 @@ T019 ✅ — Dashboard provider: monthly aggregation, category breakdown, top me
 - Files: `lib/ui/dashboard/dashboard_viewmodel.dart`, `test/unit/dashboard_test.dart`
 - Completed: Implemented DashboardViewModel with monthly summary, category breakdown, and top merchants support
 
-T020 — Dashboard UI with charts integration (syncfusion)
+T020 ✅ — Dashboard UI with charts integration (using fl_chart)
 - Files: `lib/ui/dashboard/dashboard_page.dart`, `test/widgets/dashboard_widget_test.dart`
+- Completed: Implemented Dashboard UI with bar chart for monthly trends and pie chart for category breakdown
 
 ## Drive Export & Scheduling
 
