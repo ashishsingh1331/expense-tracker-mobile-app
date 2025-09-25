@@ -44,7 +44,7 @@ T007 [P] ✅ — Implement `UserSettings` model persistence helpers
 
 ## Parsing & SMS Ingestion
 
-T008 — Implement parsing rule loader (curated rules from `assets/parsers/*.json`) and custom-rule store
+T008 ✅ — Implement parsing rule loader (curated rules from `assets/parsers/*.json`) and custom-rule store
 - Files: `lib/services/parsing/rule_loader.dart`, `assets/parsers/example_rules.json`, `test/unit/rule_loader_test.dart`
 - Deliverable: load curated JSON rules and persist custom rules in `user_settings` table.
 

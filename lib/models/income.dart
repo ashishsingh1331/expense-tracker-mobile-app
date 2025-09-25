@@ -75,7 +75,7 @@ class Income {
   // Calculate the next occurrence date after a given date
   DateTime nextDate([DateTime? after]) {
     after ??= DateTime.now();
-    
+
     // If we haven't started yet, return start date
     if (after.isBefore(startDate)) {
       return startDate;
@@ -98,28 +98,28 @@ class Income {
           startDate.day,  // Maintain original day of month
         );
         break;
-        
+
       case RecurrenceType.quarterly:
         // Align to next quarter based on start date's month
         var startMonth = startDate.month;
         var afterMonth = after.month;
-        
+
         // Calculate how many quarters to add based on the difference
         var monthsSinceStart = (after.year - startDate.year) * 12 + (afterMonth - startMonth);
         var quartersToAdd = (monthsSinceStart ~/ 3) + 1;
-        
+
         // Calculate target month and year
         var targetMonth = startMonth + (quartersToAdd * 3);
         var yearIncrement = (targetMonth - 1) ~/ 12;
         targetMonth = ((targetMonth - 1) % 12) + 1;
-        
+
         nextDate = DateTime(
           startDate.year + yearIncrement,
           targetMonth,
           startDate.day,
         );
         break;
-        
+
       case RecurrenceType.annual:
         // Go to next year, same month and day
         nextDate = DateTime(

@@ -1,0 +1,14 @@
+{
+  "summary": "Append daily transactions to Drive backup file",
+  "request": {
+    "type": "object",
+    "properties": {
+      "export_date": {"type":"string","format":"date"},
+      "transactions": {"type":"array","items":{"type":"object"}}
+    },
+    "required":["export_date","transactions"]
+  },
+  "response": {
+    "200": {"type":"object","properties":{"status":{"type":"string"},"rows_appended":{"type":"integer"}}}
+  }
+}

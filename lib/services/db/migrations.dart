@@ -29,7 +29,7 @@ class DatabaseMigrator {
     // Read and execute schema.sql
     String schema = await rootBundle.loadString('lib/services/db/schema.sql');
     List<String> statements = schema.split(';');
-    
+
     for (String statement in statements) {
       if (statement.trim().isNotEmpty) {
         await db.execute(statement);
@@ -46,10 +46,10 @@ class DatabaseMigrator {
   static Future<void> resetDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _dbName);
-    
+
     // Delete existing database
     await deleteDatabase(path);
-    
+
     // Reinitialize
     _database = null;
     await database;

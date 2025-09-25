@@ -35,10 +35,8 @@ dependencies:
   flutter_riverpod: ^3.0.0
   sqflite: ^2.3.2
   path_provider: ^2.1.2
-  telephony: ^0.2.0
   syncfusion_flutter_charts: ^24.1.47
   excel: ^4.0.2
-  flutter_local_notifications: ^16.3.2
 
   # UI dependencies
   cupertino_icons: ^1.0.8
@@ -67,7 +65,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  
+
   # Include SQL schema file
   assets:
     - lib/services/db/

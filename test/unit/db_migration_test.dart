@@ -80,28 +80,28 @@ class TestDatabaseMigrator {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   sqfliteFfiInit();
-  
+
   group('Database Migration Tests', () {
     late Database db;
-    
+
     setUpAll(() {
       databaseFactory = databaseFactoryFfi;
     });
-    
+
     setUp(() async {
       // Get a fresh database instance for each test
       db = await TestDatabaseMigrator.database;
     });
-    
+
     tearDown(() async {
       // Reset database for next test
       await TestDatabaseMigrator.resetDatabase();
     });
-    
+
     test('Tables are created after migration', () async {
       // Check if tables exist by trying to query them
       var tables = ['transactions', 'income', 'user_settings'];
-      
+
       for (var table in tables) {
         var result = await db.query(
           table,
@@ -110,25 +110,25 @@ void main() {
         expect(result, isA<List>(), reason: 'Table $table should exist and be queryable');
       }
     });
-    
+
     test('Indexes are created for transactions table', () async {
       var result = await db.rawQuery(
         "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='transactions';"
       );
-      
+
       var indexNames = result.map((row) => row['name'] as String).toList();
-      
+
       expect(indexNames, containsAll([
         'idx_transactions_date',
         'idx_transactions_amount',
         'idx_transactions_merchant',
       ]));
     });
-    
+
     test('Settings table has unique constraint on key column', () async {
       // Try to insert duplicate keys - should fail
       await db.insert('user_settings', {'key': 'test_key', 'value': 'value1'});
-      
+
       expect(
         () => db.insert('user_settings', {'key': 'test_key', 'value': 'value2'}),
         throwsA(isA<DatabaseException>()),
