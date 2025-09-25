@@ -28,6 +28,13 @@ Rules
 
 Automation
 - Use `./scripts/create-task-branch-local.sh` to create correctly named local branches.
+- By default the script will NOT make commits. Use the `--commit` flag to create an initial commit automatically.
+
+Examples
+- Create a branch locally without committing:
+   ./scripts/create-task-branch-local.sh T017 "manual entry"
+- Create a branch and make an initial empty commit:
+   ./scripts/create-task-branch-local.sh T017 "manual entry" --commit
 
 Notes
 - This file documents the local-branch-first workflow enforced by the project. Remote push is an explicit, manual step.
