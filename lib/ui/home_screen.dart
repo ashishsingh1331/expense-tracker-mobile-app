@@ -25,6 +25,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _load() async {
     setState(() => _loading = true);
+    // Seed sample data on first run if DB is empty so dashboard has content
+    final currentCount = await _repo.countTransactions();
+    if (currentCount == 0) {
+      await _repo.seedSampleData();
+    }
+
     final items = await _repo.getAllTransactions();
     // compute totals for current month
     final now = DateTime.now();
