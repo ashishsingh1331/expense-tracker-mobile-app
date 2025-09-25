@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:expense_tracker/models/transaction.dart' as TxnModel;
 
 class ManualEntryScreen extends StatefulWidget {
-  const ManualEntryScreen({super.key});
+  final dynamic transaction; // keep dynamic to avoid import cycles in some setups
+  const ManualEntryScreen({super.key, this.transaction});
 
   @override
   State<ManualEntryScreen> createState() => _ManualEntryScreenState();
@@ -16,6 +17,8 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
   DateTime _date = DateTime.now();
   bool _isExpense = true;
 
+  TxnModel.Transaction? _original;
+
   @override
   void dispose() {
     _merchantCtrl.dispose();
@@ -24,12 +27,41 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    // If a transaction was passed, prefill the form for editing
+    final t = widget.transaction as TxnModel.Transaction?;
+    if (t != null) {
+      _original = t;
+      _merchantCtrl.text = t.merchant;
+      _amountCtrl.text = t.amount.toString();
+      _notesCtrl.text = t.notes ?? '';
+      _date = t.date;
+      _isExpense = t.isExpense;
+    }
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final amount = double.parse(_amountCtrl.text);
+    if (_original != null) {
+      final updated = _original!.copyWith(
+        date: _date,
+        amount: amount,
+        merchant: _merchantCtrl.text.trim(),
+        notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
+        isExpense: _isExpense,
+        updatedAt: DateTime.now(),
+      );
+      Navigator.of(context).pop(updated);
+      return;
+    }
+
     final txn = TxnModel.Transaction(
       date: _date,
-      amount: double.parse(_amountCtrl.text),
+      amount: amount,
       merchant: _merchantCtrl.text.trim(),
       notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
       isExpense: _isExpense,

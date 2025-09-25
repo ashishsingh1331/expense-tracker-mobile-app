@@ -137,6 +137,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                   title: Text(t.merchant),
                                   subtitle: Text('${t.date.toLocal()} • ${t.category ?? ''}'),
                                   trailing: Text((t.isExpense ? '-' : '+') + t.amount.toStringAsFixed(2)),
+                                  onTap: () async {
+                                    final res = await Navigator.of(context).push<TxnModel.Transaction?>(
+                                      MaterialPageRoute(builder: (_) => ManualEntryScreen(transaction: t)),
+                                    );
+                                    if (res != null) {
+                                      // If the returned transaction has an id, treat as update
+                                      if (res.id != null) {
+                                        await _repo.updateTransaction(res);
+                                      } else {
+                                        await _repo.insertTransaction(res);
+                                      }
+                                      await _load();
+                                    }
+                                  },
                                 ),
                               );
                             },
