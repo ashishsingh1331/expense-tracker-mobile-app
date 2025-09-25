@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:expense_tracker/services/repository/transaction_repository.dart';
 import 'package:expense_tracker/models/transaction.dart' as TxnModel;
 import 'package:expense_tracker/ui/manual_entry_screen.dart';
-import 'package:intl/intl.dart';
-
+// Lightweight chart point for sparkline
 class _ChartPoint {
   final DateTime day;
   final double amount;
@@ -31,14 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _load();
   }
-
-
-class _ChartPoint {
-  final DateTime day;
-  final double amount;
-  _ChartPoint(this.day, this.amount);
-}
-
 
   Future<void> _load() async {
     setState(() => _loading = true);
@@ -112,7 +102,7 @@ class _ChartPoint {
                     )
                   : Column(
                       children: [
-                        // 7-day expense trend chart
+                        // 7-day expense mini bar chart (sparkline)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
                           child: Card(
@@ -120,19 +110,29 @@ class _ChartPoint {
                               height: 120,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: SfCartesianChart(
-                                  primaryXAxis: DateTimeAxis(intervalType: DateTimeIntervalType.days, dateFormat: DateFormat.Md()),
-                                  primaryYAxis: NumericAxis(isVisible: false),
-                                  series: <CartesianSeries<_ChartPoint, DateTime>>[
-                                    AreaSeries<_ChartPoint, DateTime>(
-                                      dataSource: _dailyExpenses,
-                                      xValueMapper: (_ChartPoint p, _) => p.day,
-                                      yValueMapper: (_ChartPoint p, _) => p.amount,
-                                      color: Colors.red.withOpacity(0.4),
-                                      borderWidth: 2,
-                                    )
-                                  ],
-                                ),
+                                child: LayoutBuilder(builder: (context, constraints) {
+                                  final maxAmount = _dailyExpenses.map((e) => e.amount).fold<double>(0.0, (a, b) => a > b ? a : b);
+                                  return Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: _dailyExpenses.map((d) {
+                                      final height = maxAmount == 0 ? 4.0 : (d.amount / maxAmount) * (constraints.maxHeight - 16);
+                                      return Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Container(height: height.clamp(4.0, constraints.maxHeight - 16), color: Colors.redAccent),
+                                              const SizedBox(height: 6),
+                                              Text('${d.day.month}/${d.day.day}', style: const TextStyle(fontSize: 10)),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  );
+                                }),
                               ),
                             ),
                           ),
