@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:expense_tracker/services/repository/transaction_repository.dart';
 import 'package:expense_tracker/models/transaction.dart' as TxnModel;
 import 'package:expense_tracker/ui/manual_entry_screen.dart';
+import 'package:intl/intl.dart';
+
+class _ChartPoint {
+  final DateTime day;
+  final double amount;
+  _ChartPoint(this.day, this.amount);
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,12 +24,21 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _loading = true;
   double _totalExpenses = 0.0;
   double _totalIncome = 0.0;
+  List<_ChartPoint> _dailyExpenses = [];
 
   @override
   void initState() {
     super.initState();
     _load();
   }
+
+
+class _ChartPoint {
+  final DateTime day;
+  final double amount;
+  _ChartPoint(this.day, this.amount);
+}
+
 
   Future<void> _load() async {
     setState(() => _loading = true);
@@ -43,6 +60,22 @@ class _HomeScreenState extends State<HomeScreen> {
         income += t.amount;
       }
     }
+
+    // compute daily totals for last 7 days
+    final last7 = <DateTime>[];
+    for (int i = 6; i >= 0; i--) {
+      last7.add(DateTime(now.year, now.month, now.day).subtract(Duration(days: i)));
+    }
+    final Map<String, double> dailyMap = {for (final d in last7) d.toIso8601String(): 0.0};
+    for (final t in items) {
+      if (!t.isExpense) continue;
+      final keyDate = DateTime(t.date.year, t.date.month, t.date.day);
+      final key = keyDate.toIso8601String();
+      if (dailyMap.containsKey(key)) {
+        dailyMap[key] = (dailyMap[key] ?? 0.0) + t.amount;
+      }
+    }
+    _dailyExpenses = last7.map((d) => _ChartPoint(d, dailyMap[d.toIso8601String()] ?? 0.0)).toList();
 
     setState(() {
       _items = items;
@@ -79,6 +112,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   : Column(
                       children: [
+                        // 7-day expense trend chart
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
+                          child: Card(
+                            child: SizedBox(
+                              height: 120,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SfCartesianChart(
+                                  primaryXAxis: DateTimeAxis(intervalType: DateTimeIntervalType.days, dateFormat: DateFormat.Md()),
+                                  primaryYAxis: NumericAxis(isVisible: false),
+                                  series: <CartesianSeries<_ChartPoint, DateTime>>[
+                                    AreaSeries<_ChartPoint, DateTime>(
+                                      dataSource: _dailyExpenses,
+                                      xValueMapper: (_ChartPoint p, _) => p.day,
+                                      yValueMapper: (_ChartPoint p, _) => p.amount,
+                                      color: Colors.red.withOpacity(0.4),
+                                      borderWidth: 2,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Card(
