@@ -1,50 +1,28 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Expense Tracker — Mobile Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### Mobile-first UX
+Every design and implementation choice must prioritize a fast, clear, and accessible mobile experience. Screens should be focused, input minimal, and flows forgiving.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### Offline-first & Reliable Sync
+Local storage and conservative caching are required. App must work while offline and reconcile with the backend when connectivity returns. Conflicts must be handled deterministically and surfaced to the user when necessary.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Performance & Battery Consciousness
+Aim for fast cold-start and smooth UI. Limit background work and network usage. Prefer lazy-loading and batching to reduce CPU/network/battery impact.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### Observability
+Ship minimal structured logging, error/crash reporting, and usage metrics that respect privacy. Use these signals to prioritize fixes and UX improvements.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+## Constraints
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- Platforms: iOS 13+ and Android API 21+ (document if broader support is required).
+- Implementation: native or cross-platform approaches are allowed; the chosen approach must be documented in the README and justified.
+- Dependencies: keep third-party libraries minimal, vetted for licenses and security, and pinned in dependency manifests.
+- Data storage: use a single local data source (SQLite/Realm/room) as the source-of-truth; sync layer is explicit and versioned.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution is the default guide for mobile work in this repository. Changes must be proposed via a documented PR and approved by project maintainers. Emergency exceptions must be recorded in the PR that introduces them.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0 | **Ratified**: 2025-09-25 | **Last Amended**: 2025-09-25

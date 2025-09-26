@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Credit Card Transaction",
+    "patterns": [
+      "You spent {{amount}} at {{merchant}} on your credit card",
+      "Credit card transaction of {{amount}} at {{merchant}}",
+      "{{amount}} was charged at {{merchant}}"
+    ],
+    "priority": 1,
+    "isExpense": true,
+    "extractors": {
+      "amount": "\\d+(\\.\\d{2})?",
+      "merchant": "[A-Za-z0-9\\s&]+(?=\\s+on|\\s+was)"
+    }
+  },
+  {
+    "name": "Debit Card Transaction",
+    "patterns": [
+      "Debit card transaction of {{amount}} at {{merchant}}",
+      "{{amount}} debited at {{merchant}}",
+      "Purchase of {{amount}} at {{merchant}}"
+    ],
+    "priority": 1,
+    "isExpense": true,
+    "extractors": {
+      "amount": "\\d+(\\.\\d{2})?",
+      "merchant": "[A-Za-z0-9\\s&]+(?=\\s+was|$)"
+    }
+  },
+  {
+    "name": "Salary Credit",
+    "patterns": [
+      "Salary credit of {{amount}} from {{merchant}}",
+      "{{amount}} credited from {{merchant}} - Salary",
+      "Your salary of {{amount}} from {{merchant}} has been credited"
+    ],
+    "priority": 2,
+    "isExpense": false,
+    "extractors": {
+      "amount": "\\d+(\\.\\d{2})?",
+      "merchant": "[A-Za-z0-9\\s&]+(?=\\s+-|\\s+has|$)"
+    }
+  }
+]
